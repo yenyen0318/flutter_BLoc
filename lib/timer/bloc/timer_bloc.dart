@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:bloc_counter/ticker.dart';
+import 'package:bloc_counter/timer/ticker.dart';
 import 'package:equatable/equatable.dart';
 
 part 'timer_event.dart';
@@ -9,7 +9,7 @@ part 'timer_state.dart';
 
 class TimerBloc extends Bloc<TimerEvent, TimerState> {
   final Ticker _ticker;
-  static const int _duration = 60;
+  static const int _duration = 120;
 
   //監聽事件並提共callbacks，也可用於取消訂閱等
   StreamSubscription<int>? _tickerSubscription;

@@ -1,7 +1,9 @@
-import 'package:bloc_counter/bloc/timer_bloc.dart';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../bloc/timer_bloc.dart';
 import '../ticker.dart';
 
 class TimerPage extends StatelessWidget {
@@ -26,8 +28,35 @@ class TimerView extends StatelessWidget {
       color: Colors.white,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [TimerText(), SizedBox(height: 100,) ,Actions()],
+        children: [
+          TimerText(),
+          SizedBox(
+            height: 100,
+          ),
+          Actions()
+        ],
       ),
+    );
+  }
+}
+
+class TimerSelect extends StatelessWidget {
+  const TimerSelect({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListWheelScrollView(
+      itemExtent: 50,
+      children: List.generate(1000, (index) => index)
+          .map(
+            (text) => Container(
+              margin: EdgeInsets.only(left: 20, right: 20),
+              color:
+                  Colors.primaries[Random().nextInt(Colors.primaries.length)],
+              child: Center(child: Text(text.toString())),
+            ),
+          )
+          .toList(),
     );
   }
 }
@@ -43,9 +72,29 @@ class TimerText extends StatelessWidget {
         ((duration / 60) % 60).floor().toString().padLeft(2, '0');
     final secondsStr = (duration % 60).floor().toString().padLeft(2, '0');
 
-    return Text(
-      '$minutesStr:$secondsStr',
-      style: Theme.of(context).textTheme.headline1,
+    return GestureDetector(
+      child: Text(
+        '$minutesStr:$secondsStr',
+        style: Theme.of(context).textTheme.headline1,
+      ),
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              content: TimerSelect(),
+              actions: <Widget>[
+                new FlatButton(
+                  child: new Text("Close"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 }
