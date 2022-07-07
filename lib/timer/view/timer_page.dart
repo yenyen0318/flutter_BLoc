@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -22,30 +23,54 @@ class TimerView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          TimerName(),
-          SizedBox(
-            height: 10,
+    return BlocBuilder<TimerBloc, TimerState>(
+      buildWhen: (prev, state) => prev.runtimeType != state.runtimeType,
+      builder: (BuildContext context, TimerState state) {
+        return Container(
+          color: Colors.white,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              //判斷目前的State是哪種，顯示對應的畫面給使用者
+              if (state is TimerInitial) ...[
+                Text(
+                  '計時器',
+                  style: TextStyle(
+                      fontSize: 50,
+                      color: Colors.black,
+                      decoration: TextDecoration.none,
+                      fontWeight: FontWeight.normal),
+                ),
+                SizedBox(
+                  height: 60,
+                ),
+                TimerName(),
+                SizedBox(
+                  height: 10,
+                ),
+                TimeSelector(),
+                SizedBox(
+                  height: 100,
+                ),
+                TimerActions()
+              ] else ...[
+                TimerText(),
+                SizedBox(
+                  height: 100,
+                ),
+                EditTimerActions(),
+                SizedBox(
+                  height: 100,
+                ),
+                TimerActions()
+              ],
+            ],
           ),
-          TimerText(),
-          SizedBox(
-            height: 100,
-          ),
-          editTimerActions(),
-          SizedBox(
-            height: 100,
-          ),
-          TimerActions()
-        ],
-      ),
+        );
+      },
     );
   }
 }
-
 
 class TimerText extends StatelessWidget {
   const TimerText({Key? key}) : super(key: key);
@@ -55,7 +80,7 @@ class TimerText extends StatelessWidget {
     //讓widget監聽TimerBloc的變化
     final duration = context.select((TimerBloc bloc) => bloc.state.duration);
     return Text(
-      TimeTransform(duration),
+      TimeTransform(duration).join(":"),
       style: TextStyle(
           fontSize: 70,
           color: Colors.black,
@@ -65,25 +90,128 @@ class TimerText extends StatelessWidget {
   }
 }
 
+class TimeSelector extends StatelessWidget {
+  const TimeSelector({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: SizedBox(
+        height: 100,
+        child: Row(children: [
+          Expanded(
+            child: CupertinoPicker(
+              children: List<Text>.generate(
+                100,
+                (i) => Text(
+                  '$i',
+                  style: TextStyle(
+                      fontSize: 30,
+                      color: Colors.black,
+                      decoration: TextDecoration.none,
+                      fontWeight: FontWeight.normal),
+                ),
+              ),
+              onSelectedItemChanged: (value) {
+                debugPrint('hour $value');
+                context.read<TimerBloc>().add(SetTimerTime(addDuration: value*3600));
+              },
+              itemExtent: 30,
+              diameterRatio: 1,
+              looping: true,
+            ),
+          ),
+          Text(
+            ':',
+            style: TextStyle(
+                fontSize: 30,
+                color: Colors.black,
+                decoration: TextDecoration.none,
+                fontWeight: FontWeight.normal),
+          ),
+          Expanded(
+            child: CupertinoPicker(
+              children: List<Text>.generate(
+                60,
+                (i) => Text(
+                  '$i',
+                  style: TextStyle(
+                      fontSize: 30,
+                      color: Colors.black,
+                      decoration: TextDecoration.none,
+                      fontWeight: FontWeight.normal),
+                ),
+              ),
+              onSelectedItemChanged: (value) {
+                debugPrint('min $value');
+                context.read<TimerBloc>().add(SetTimerTime(addDuration: value*60));
+              },
+              itemExtent: 30,
+              diameterRatio: 1,
+              looping: true,
+            ),
+          ),
+          Text(
+            ':',
+            style: TextStyle(
+                fontSize: 30,
+                color: Colors.black,
+                decoration: TextDecoration.none,
+                fontWeight: FontWeight.normal),
+          ),
+          Expanded(
+            child: CupertinoPicker(
+              children: List<Text>.generate(
+                60,
+                (i) => Text(
+                  '$i',
+                  style: TextStyle(
+                      fontSize: 30,
+                      color: Colors.black,
+                      decoration: TextDecoration.none,
+                      fontWeight: FontWeight.normal),
+                ),
+              ),
+              onSelectedItemChanged: (value) {
+                debugPrint('sec $value');
+                context.read<TimerBloc>().add(SetTimerTime(addDuration: value));
+              },
+              itemExtent: 30,
+              diameterRatio: 1,
+              looping: true,
+            ),
+          ),
+        ]),
+      ),
+    );
+  }
+}
+
 class TimerName extends StatelessWidget {
   const TimerName({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
       Text('小時',
           style: TextStyle(
               fontSize: 14,
               color: Colors.grey[700],
               decoration: TextDecoration.none,
               fontWeight: FontWeight.normal)),
+      SizedBox(
+        width: 25,
+      ),
       Text('分鐘',
           style: TextStyle(
               fontSize: 14,
               color: Colors.grey[700],
               decoration: TextDecoration.none,
               fontWeight: FontWeight.normal)),
-      Text('秒  ',
+      SizedBox(
+        width: 30,
+      ),
+      Text('秒 ',
           style: TextStyle(
               fontSize: 14,
               color: Colors.grey[700],
@@ -93,8 +221,8 @@ class TimerName extends StatelessWidget {
   }
 }
 
-class editTimerActions extends StatelessWidget {
-  editTimerActions({Key? key}) : super(key: key);
+class EditTimerActions extends StatelessWidget {
+  EditTimerActions({Key? key}) : super(key: key);
   final addTextItems = [10, 30, 60, 300, 600, 3600];
   @override
   Widget build(BuildContext context) {
@@ -122,21 +250,21 @@ class TimerCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        context.read<TimerBloc>().add(SetTimerTime(addDuration: duration));
-      },
-      child: Card(
+        onTap: () {
+          context.read<TimerBloc>().add(SetTimerTime(addDuration: duration));
+        },
+        child: Card(
           elevation: 0,
           child: Center(
-            child: Container(
-                alignment: Alignment.center,
-                width: 100,
-                height: 100,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle, color: Colors.blue[100]),
-                child: Text(TimeTransform(duration)),
+              child: Container(
+            alignment: Alignment.center,
+            width: 100,
+            height: 100,
+            decoration:
+                BoxDecoration(shape: BoxShape.circle, color: Colors.blue[100]),
+            child: Text(TimeTransform(duration).join(":")),
           )),
-    ));
+        ));
   }
 }
 
@@ -227,12 +355,9 @@ class TimerActions extends StatelessWidget {
   }
 }
 
-
-String TimeTransform(int duration){
-  final hoursStr =
-        ((duration / 3600) % 60).floor().toString().padLeft(2, '0');
-    final minutesStr =
-        ((duration / 60) % 60).floor().toString().padLeft(2, '0');
-    final secondsStr = (duration % 60).floor().toString().padLeft(2, '0');
-  return '$hoursStr:$minutesStr:$secondsStr';
+List<String> TimeTransform(int duration) {
+  final hoursStr = ((duration / 3600) % 60).floor().toString().padLeft(2, '0');
+  final minutesStr = ((duration / 60) % 60).floor().toString().padLeft(2, '0');
+  final secondsStr = (duration % 60).floor().toString().padLeft(2, '0');
+  return [hoursStr, minutesStr, secondsStr];
 }
