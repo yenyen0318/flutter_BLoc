@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:bloc_counter/timer/ticker.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 
 part 'timer_event.dart';
 part 'timer_state.dart';
@@ -72,10 +73,11 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
 
   ///檢查時間是否合理
   int _durationValidator(int duration) {
+    debugPrint('$duration / ${(60*60*100)}');
     return duration < 0
-        ? 3600 + duration
-        : duration >= 3600
-            ? 3600 - duration
+        ? 0
+        : duration >= ((60 * 60 * 100))
+            ? ((60 * 60 * 100) -1)
             : duration;
   }
 
