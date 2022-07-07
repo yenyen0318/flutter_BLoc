@@ -30,10 +30,11 @@ class TimerView extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           TimerText(),
+          editTimerActions(),
           SizedBox(
             height: 100,
           ),
-          Actions()
+          TimerActions()
         ],
       ),
     );
@@ -72,35 +73,42 @@ class TimerText extends StatelessWidget {
         ((duration / 60) % 60).floor().toString().padLeft(2, '0');
     final secondsStr = (duration % 60).floor().toString().padLeft(2, '0');
 
-    return GestureDetector(
-      child: Text(
-        '$minutesStr:$secondsStr',
-        style: Theme.of(context).textTheme.headline1,
-      ),
-      onTap: () {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              content: TimerSelect(),
-              actions: <Widget>[
-                new FlatButton(
-                  child: new Text("Close"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          },
-        );
-      },
+    return Text(
+      '$minutesStr:$secondsStr',
+      style: Theme.of(context).textTheme.headline1,
     );
   }
 }
 
-class Actions extends StatelessWidget {
-  const Actions({Key? key}) : super(key: key);
+class editTimerActions extends StatelessWidget {
+  editTimerActions({Key? key}) : super(key: key);
+  final addTextItems = [1, 5, 10, 30, 60, -1, -5, -10, -30, -60];
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 44,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: addTextItems.length,
+        itemBuilder: (context, index) {
+          return TextButton(
+              onPressed: () {
+                debugPrint('${addTextItems[index]}');
+                context
+                    .read<TimerBloc>()
+                    .add(SetTimerTime(addDuration: addTextItems[index]));
+              },
+              child: Text(addTextItems[index] > 0
+                  ? '+${addTextItems[index]}'
+                  : '${addTextItems[index]}'));
+        },
+      ),
+    );
+  }
+}
+
+class TimerActions extends StatelessWidget {
+  TimerActions({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -122,11 +130,13 @@ class Actions extends StatelessWidget {
               if (state is TimerRunInProgress) ...[
                 FloatingActionButton(
                   child: Icon(Icons.pause),
-                  onPressed: () => context.read<TimerBloc>().add(TimerPaused()),
+                  onPressed: () =>
+                      context.read<TimerBloc>().add(TimerPaused()),
                 ),
                 FloatingActionButton(
                   child: Icon(Icons.replay),
-                  onPressed: () => context.read<TimerBloc>().add(TimerReset()),
+                  onPressed: () =>
+                      context.read<TimerBloc>().add(TimerReset()),
                 ),
               ],
               if (state is TimerRunPause) ...[
@@ -137,13 +147,15 @@ class Actions extends StatelessWidget {
                 ),
                 FloatingActionButton(
                   child: Icon(Icons.replay),
-                  onPressed: () => context.read<TimerBloc>().add(TimerReset()),
+                  onPressed: () =>
+                      context.read<TimerBloc>().add(TimerReset()),
                 ),
               ],
               if (state is TimerRunComplete) ...[
                 FloatingActionButton(
                   child: Icon(Icons.replay),
-                  onPressed: () => context.read<TimerBloc>().add(TimerReset()),
+                  onPressed: () =>
+                      context.read<TimerBloc>().add(TimerReset()),
                 ),
               ]
             ],

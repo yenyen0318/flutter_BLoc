@@ -31,3 +31,8 @@ class TimerResumed extends TimerEvent {
 class TimerReset extends TimerEvent {
   const TimerReset();
 }
+
+class SetTimerTime extends TimerEvent {
+  const SetTimerTime({required this.addDuration});
+  final int addDuration;
+}

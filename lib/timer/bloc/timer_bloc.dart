@@ -9,20 +9,22 @@ part 'timer_state.dart';
 
 class TimerBloc extends Bloc<TimerEvent, TimerState> {
   final Ticker _ticker;
-  static const int _duration = 120;
+  static const int _initDuration = 30;  //預設時間
+  static int _duration = 30;            //當前時間
 
   //監聽事件並提共callbacks，也可用於取消訂閱等
   StreamSubscription<int>? _tickerSubscription;
 
   TimerBloc({required Ticker ticker})
       : _ticker = ticker,
-        super(TimerInitial(_duration)) {
+        super(TimerInitial(_initDuration)) {
     //依據各event事件加入商業邏輯
     on<TimerStarted>(_onStarted);
     on<TimerTicked>(_onTicked);
     on<TimerPaused>(_onPaused);
     on<TimerResumed>(_onResumed);
     on<TimerReset>(_onReset);
+    on<SetTimerTime>(_setTime);
   }
 
   @override
@@ -34,13 +36,37 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
 
   void _onStarted(TimerStarted event, Emitter<TimerState> emit) {
     //當TimerBloc收到TimerStarted事件，會推送一個TimerRunInProgress事件出去
-    emit(TimerRunInProgress(event.duration));
+    emit(TimerRunInProgress(state.duration));
     //若已存在則進行取消以釋放記憶體
     _tickerSubscription?.cancel();
     //監聽流並推送剩餘時間事件
     _tickerSubscription = _ticker
-        .tick(ticks: event.duration)
+        .tick(ticks: state.duration)
         .listen((duration) => add(TimerTicked(duration: duration)));
+  }
+
+  void _setTime(SetTimerTime event, Emitter<TimerState> emit) {
+    if (state is TimerRunInProgress || state is TimerRunPause) {
+      //若已存在則進行取消以釋放記憶體
+      _tickerSubscription?.cancel();
+      //重設倒數秒數
+      _duration = state.duration + event.addDuration;
+      //監聽流並推送剩餘時間事件
+      _tickerSubscription = _ticker
+          .tick(ticks: _duration)
+          .listen((duration) => add(TimerTicked(duration: duration)));
+
+      //主動告知使用者當前狀態，避免停頓
+      if (state is TimerRunInProgress) {
+        emit(TimerRunInProgress(_duration));
+      } else {
+        _tickerSubscription?.pause();
+        emit(TimerRunPause(_duration));
+      }
+    } else {
+      _duration = _duration + event.addDuration;
+      emit(TimerInitial(_duration));
+    }
   }
 
   void _onTicked(TimerTicked event, Emitter<TimerState> emit) {
@@ -69,9 +95,10 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
   }
 
   void _onReset(TimerEvent event, Emitter<TimerState> emit) {
+    _duration = _initDuration;
     //若已存在則進行取消以避免收到不必要的倒數事件
     _tickerSubscription?.cancel();
     //推送一個TimerInitial事件重新計時
-    emit(TimerInitial(_duration));
+    emit(TimerInitial(_initDuration));
   }
 }
