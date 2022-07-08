@@ -1,3 +1,4 @@
+import 'package:bloc_counter/timer/timer_theme.dart';
 import 'package:bloc_counter/timer/widgets/timer_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,14 +34,7 @@ class TimerView extends StatelessWidget {
             children: [
               //判斷目前的State是哪種，顯示對應的畫面給使用者
               if (state is TimerInitial) ...[
-                Text(
-                  '計時器',
-                  style: TextStyle(
-                      fontSize: 50,
-                      color: Colors.black,
-                      decoration: TextDecoration.none,
-                      fontWeight: FontWeight.normal),
-                ),
+                Text('計時器', style: TimerTheme.textTheme.headline2),
                 SizedBox(
                   height: 60,
                 ),

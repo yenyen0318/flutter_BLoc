@@ -1,5 +1,6 @@
 import 'package:bloc_counter/timer/bloc/timer_bloc.dart';
 import 'package:bloc_counter/timer/ticker.dart';
+import 'package:bloc_counter/timer/timer_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -12,11 +13,7 @@ class TimerText extends StatelessWidget {
     final duration = context.select((TimerBloc bloc) => bloc.state.duration);
     return Text(
       TimeTransform(duration).join(":"),
-      style: TextStyle(
-          fontSize: 70,
-          color: Colors.black,
-          decoration: TextDecoration.none,
-          fontWeight: FontWeight.normal),
+      style: TimerTheme.textTheme.headline1,
     );
   }
 }

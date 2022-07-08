@@ -1,6 +1,6 @@
 import 'package:bloc_counter/timer/bloc/timer_bloc.dart';
+import 'package:bloc_counter/timer/timer_theme.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TimeSelector extends StatelessWidget {
@@ -18,16 +18,14 @@ class TimeSelector extends StatelessWidget {
                 100,
                 (i) => Text(
                   '$i',
-                  style: TextStyle(
-                      fontSize: 30,
-                      color: Colors.black,
-                      decoration: TextDecoration.none,
-                      fontWeight: FontWeight.normal),
+                  style: TimerTheme.textTheme.bodyText2,
                 ),
               ),
               onSelectedItemChanged: (value) {
                 debugPrint('hour $value');
-                context.read<TimerBloc>().add(SetTimerTime(addDuration: value*3600));
+                context
+                    .read<TimerBloc>()
+                    .add(SetTimerTime(addDuration: value * 3600));
               },
               itemExtent: 30,
               diameterRatio: 1,
@@ -36,11 +34,7 @@ class TimeSelector extends StatelessWidget {
           ),
           Text(
             ':',
-            style: TextStyle(
-                fontSize: 30,
-                color: Colors.black,
-                decoration: TextDecoration.none,
-                fontWeight: FontWeight.normal),
+            style: TimerTheme.textTheme.bodyText2,
           ),
           Expanded(
             child: CupertinoPicker(
@@ -48,16 +42,14 @@ class TimeSelector extends StatelessWidget {
                 60,
                 (i) => Text(
                   '$i',
-                  style: TextStyle(
-                      fontSize: 30,
-                      color: Colors.black,
-                      decoration: TextDecoration.none,
-                      fontWeight: FontWeight.normal),
+                  style: TimerTheme.textTheme.bodyText2,
                 ),
               ),
               onSelectedItemChanged: (value) {
                 debugPrint('min $value');
-                context.read<TimerBloc>().add(SetTimerTime(addDuration: value*60));
+                context
+                    .read<TimerBloc>()
+                    .add(SetTimerTime(addDuration: value * 60));
               },
               itemExtent: 30,
               diameterRatio: 1,
@@ -66,11 +58,7 @@ class TimeSelector extends StatelessWidget {
           ),
           Text(
             ':',
-            style: TextStyle(
-                fontSize: 30,
-                color: Colors.black,
-                decoration: TextDecoration.none,
-                fontWeight: FontWeight.normal),
+            style: TimerTheme.textTheme.bodyText2,
           ),
           Expanded(
             child: CupertinoPicker(
@@ -78,11 +66,7 @@ class TimeSelector extends StatelessWidget {
                 60,
                 (i) => Text(
                   '$i',
-                  style: TextStyle(
-                      fontSize: 30,
-                      color: Colors.black,
-                      decoration: TextDecoration.none,
-                      fontWeight: FontWeight.normal),
+                  style: TimerTheme.textTheme.bodyText2,
                 ),
               ),
               onSelectedItemChanged: (value) {

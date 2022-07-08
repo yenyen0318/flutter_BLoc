@@ -1,3 +1,4 @@
+import 'package:bloc_counter/timer/timer_theme.dart';
 import 'package:flutter/material.dart';
 
 class TimerName extends StatelessWidget {
@@ -6,30 +7,15 @@ class TimerName extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-      Text('小時',
-          style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[700],
-              decoration: TextDecoration.none,
-              fontWeight: FontWeight.normal)),
+      Text('小時', style: TimerTheme.textTheme.bodyText1),
       SizedBox(
         width: 25,
       ),
-      Text('分鐘',
-          style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[700],
-              decoration: TextDecoration.none,
-              fontWeight: FontWeight.normal)),
+      Text('分鐘', style: TimerTheme.textTheme.bodyText1),
       SizedBox(
         width: 30,
       ),
-      Text('秒 ',
-          style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[700],
-              decoration: TextDecoration.none,
-              fontWeight: FontWeight.normal)),
+      Text('秒  ', style: TimerTheme.textTheme.bodyText1),
     ]);
   }
 }
