@@ -13,11 +13,12 @@ class TimerStarted extends TimerEvent {
 }
 
 class TimerTicked extends TimerEvent {
-  const TimerTicked({required this.duration});
+  const TimerTicked({required this.duration, required this.total});
   final int duration;
+  final int total;
 
   @override
-  List<Object> get props => [duration];
+  List<Object> get props => [duration, total];
 }
 
 class TimerPaused extends TimerEvent {

@@ -13,7 +13,7 @@ class TimerTheme {
         decoration: TextDecoration.none,
         fontWeight: FontWeight.normal),
     headline1: TextStyle(
-        fontSize: 70,
+        fontSize: 50,
         color: Colors.black,
         decoration: TextDecoration.none,
         fontWeight: FontWeight.normal),

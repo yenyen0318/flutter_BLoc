@@ -48,13 +48,6 @@ class TimerActionButton extends StatelessWidget {
                   child: Icon(Icons.replay),
                   onPressed: () => context.read<TimerBloc>().add(TimerReset()),
                 ),
-              ],
-              if (state is TimerRunComplete) ...[
-                ElevatedButton(
-                  style: TimerTheme.greyButton,
-                  child: Icon(Icons.replay),
-                  onPressed: () => context.read<TimerBloc>().add(TimerReset()),
-                ),
               ]
             ],
           );
