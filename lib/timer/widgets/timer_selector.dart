@@ -18,89 +18,66 @@ class TimeSelector extends StatelessWidget {
         new FixedExtentScrollController();
 
     return Container(
-      child: SizedBox(
-        height: 100,
-        //只有在卷軸滾動完才觸發
-        child: Row(
-          children: [
-            NotificationListener<ScrollEndNotification>(
+        child: SizedBox(
+            height: 100,
+            //只有在卷軸滾動完才觸發
+            child: NotificationListener<ScrollEndNotification>(
               onNotification: (scrollNotification) {
+                debugPrint('${hourScrollController.selectedItem} ${minScrollController.selectedItem} ${secScrollController.selectedItem} ');
                 context.read<TimerBloc>().add(SetTimerTime(
-                    addDuration: CalTotalDuration(
+                    resetDuration: CalTotalDuration(
                         hourScrollController.selectedItem,
                         minScrollController.selectedItem,
-                        secScrollController.selectedItem)));
+                        secScrollController.selectedItem))); 
                 return true;
               },
-              child: Expanded(
-                child: CupertinoPicker(
-                  itemExtent: 30,
-                  scrollController: hourScrollController,
-                  children: List<Text>.generate(
-                    100,
-                    (i) => Text(
-                      '$i',
-                      style: TimerTheme.textTheme.bodyText2,
+              child: Row(children: [
+                Expanded(
+                  child: CupertinoPicker(
+                    itemExtent: 30,
+                    scrollController: hourScrollController,
+                    children: List<Text>.generate(
+                      100,
+                      (i) => Text(
+                        '$i',
+                        style: TimerTheme.textTheme.bodyText2,
+                      ),
                     ),
+                    onSelectedItemChanged: (_) {},
+                    looping: true,
                   ),
-                  onSelectedItemChanged: (_) {},
-                  looping: true,
                 ),
-              ),
-            ),
-            NotificationListener<ScrollEndNotification>(
-              onNotification: (scrollNotification) {
-                context.read<TimerBloc>().add(SetTimerTime(
-                    addDuration: CalTotalDuration(
-                        hourScrollController.selectedItem,
-                        minScrollController.selectedItem,
-                        secScrollController.selectedItem)));
-                return true;
-              },
-              child: Expanded(
-                child: CupertinoPicker(
-                  itemExtent: 30,
-                  scrollController: minScrollController,
-                  children: List<Text>.generate(
-                    59,
-                    (i) => Text(
-                      '$i',
-                      style: TimerTheme.textTheme.bodyText2,
+                Expanded(
+                  child: CupertinoPicker(
+                    itemExtent: 30,
+                    scrollController: minScrollController,
+                    children: List<Text>.generate(
+                      59,
+                      (i) => Text(
+                        '$i',
+                        style: TimerTheme.textTheme.bodyText2,
+                      ),
                     ),
+                    onSelectedItemChanged: (_) {},
+                    looping: true,
                   ),
-                  onSelectedItemChanged: (_) {},
-                  looping: true,
                 ),
-              ),
-            ),
-            NotificationListener<ScrollEndNotification>(
-              onNotification: (scrollNotification) {
-                context.read<TimerBloc>().add(SetTimerTime(
-                    addDuration: CalTotalDuration(
-                        hourScrollController.selectedItem,
-                        minScrollController.selectedItem,
-                        secScrollController.selectedItem)));
-                return true;
-              },
-              child: Expanded(
-                child: CupertinoPicker(
-                  itemExtent: 30,
-                  scrollController: secScrollController,
-                  children: List<Text>.generate(
-                    59,
-                    (i) => Text(
-                      '$i',
-                      style: TimerTheme.textTheme.bodyText2,
+                Expanded(
+                  child: CupertinoPicker(
+                    itemExtent: 30,
+                    scrollController: secScrollController,
+                    children: List<Text>.generate(
+                      59,
+                      (i) => Text(
+                        '$i',
+                        style: TimerTheme.textTheme.bodyText2,
+                      ),
                     ),
+                    onSelectedItemChanged: (_) {},
+                    looping: true,
                   ),
-                  onSelectedItemChanged: (_) {},
-                  looping: true,
                 ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+              ]),
+            )));
   }
 }

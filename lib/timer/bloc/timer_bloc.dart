@@ -48,7 +48,11 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
   }
 
   void _setTime(SetTimerTime event, Emitter<TimerState> emit) {
-    if (state is TimerRunInProgress || state is TimerRunPause) {
+    if (state is TimerInitial) {
+      _duration = _durationValidator(event.resetDuration);
+      _total = _durationValidator(event.resetDuration);
+      emit(TimerInitial(_duration, _total));
+    } else if (state is TimerRunInProgress || state is TimerRunPause) {
       //若已存在則進行取消以釋放記憶體
       _tickerSubscription?.cancel();
       //重設倒數秒數
@@ -65,10 +69,6 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
         _tickerSubscription?.pause();
         emit(TimerRunPause(_duration, _total));
       }
-    } else {
-      _duration = _durationValidator(_duration + event.addDuration);
-      _total = _durationValidator(_total + event.addDuration);
-      emit(TimerInitial(_duration, _total));
     }
   }
 
@@ -87,7 +87,7 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
     emit(
       event.duration > 0
           ? TimerRunInProgress(event.duration, event.total)
-          : TimerInitial(0,0),
+          : TimerInitial(0, 0),
     );
   }
 
