@@ -12,3 +12,7 @@ List<String> TimeTransform(int duration) {
   final secondsStr = (duration % 60).floor().toString().padLeft(2, '0');
   return [hoursStr, minutesStr, secondsStr];
 }
+
+int CalTotalDuration(int hour, int min, int sec) {
+  return hour * 3600 + min * 60 + sec;
+}
