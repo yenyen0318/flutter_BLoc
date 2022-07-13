@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:bloc_counter/notifications.dart';
 import 'package:bloc_counter/timer/ticker.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
@@ -83,12 +84,13 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
   }
 
   void _onTicked(TimerTicked event, Emitter<TimerState> emit) {
-    //當時間大於0推送一個TimerRunInProgress事件，小於0則推送一個TimerInitial事件
-    emit(
-      event.duration > 0
-          ? TimerRunInProgress(event.duration, event.total)
-          : TimerInitial(0, 0),
-    );
+    if (event.duration > 0) {
+      emit(TimerRunInProgress(event.duration, event.total));
+    } else {
+      //時間到推送通知
+      NotificationUtils.timerNotification(0);
+      emit(TimerInitial(0,0));
+    }
   }
 
   void _onPaused(TimerPaused event, Emitter<TimerState> emit) {

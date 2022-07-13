@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
+import 'notifications.dart';
 import 'timer/view/timer_page.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  NotificationUtils.initNotification();
   runApp(const MyApp());
 }
 

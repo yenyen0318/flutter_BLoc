@@ -1,3 +1,4 @@
+import 'package:bloc_counter/notifications.dart';
 import 'package:bloc_counter/timer/timer_theme.dart';
 import 'package:bloc_counter/timer/widgets/timer_widgets.dart';
 import 'package:flutter/material.dart';
@@ -19,9 +20,22 @@ class TimerPage extends StatelessWidget {
   }
 }
 
-class TimerView extends StatelessWidget {
+class TimerView extends StatefulWidget {
   const TimerView({Key? key}) : super(key: key);
 
+  @override
+  State<TimerView> createState() => _TimerViewState();
+}
+
+class _TimerViewState extends State<TimerView> {
+  @override
+  void initState() {
+    super.initState();
+
+    NotificationUtils.allowedNotification(context);
+    NotificationUtils.listenNotification(context);
+  }
+  
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TimerBloc, TimerState>(
