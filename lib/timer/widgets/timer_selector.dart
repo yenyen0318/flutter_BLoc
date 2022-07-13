@@ -10,12 +10,16 @@ class TimeSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    FixedExtentScrollController hourScrollController =
+    FixedExtentScrollController _hourScrollController =
         new FixedExtentScrollController();
-    FixedExtentScrollController minScrollController =
+    FixedExtentScrollController _minuteScrollController =
         new FixedExtentScrollController();
-    FixedExtentScrollController secScrollController =
+    FixedExtentScrollController _secondScrollController =
         new FixedExtentScrollController();
+
+    int _hour = 0;
+    int _minute = 0;
+    int _second = 0;
 
     return Container(
         child: SizedBox(
@@ -23,19 +27,18 @@ class TimeSelector extends StatelessWidget {
             //只有在卷軸滾動完才觸發
             child: NotificationListener<ScrollEndNotification>(
               onNotification: (scrollNotification) {
-                debugPrint('${hourScrollController.selectedItem} ${minScrollController.selectedItem} ${secScrollController.selectedItem} ');
+                debugPrint(
+                    '${_hour} ${_minute} ${_second} ');
+                //直接取用hourScrollController.selectedItem向上滾動或轉超過一圈會有超出設定範圍的情況發生(例如:負值等)
                 context.read<TimerBloc>().add(SetTimerTime(
-                    resetDuration: CalTotalDuration(
-                        hourScrollController.selectedItem,
-                        minScrollController.selectedItem,
-                        secScrollController.selectedItem))); 
+                    resetDuration: CalTotalDuration(_hour, _minute, _second)));
                 return true;
               },
               child: Row(children: [
                 Expanded(
                   child: CupertinoPicker(
-                    itemExtent: 30,
-                    scrollController: hourScrollController,
+                    itemExtent: 33,
+                    scrollController: _hourScrollController,
                     children: List<Text>.generate(
                       100,
                       (i) => Text(
@@ -43,37 +46,43 @@ class TimeSelector extends StatelessWidget {
                         style: TimerTheme.textTheme.bodyText2,
                       ),
                     ),
-                    onSelectedItemChanged: (_) {},
+                    onSelectedItemChanged: (value) {
+                      _hour = value;
+                    },
                     looping: true,
                   ),
                 ),
                 Expanded(
                   child: CupertinoPicker(
-                    itemExtent: 30,
-                    scrollController: minScrollController,
+                    itemExtent: 33,
+                    scrollController: _minuteScrollController,
                     children: List<Text>.generate(
-                      59,
+                      60,
                       (i) => Text(
                         '$i',
                         style: TimerTheme.textTheme.bodyText2,
                       ),
                     ),
-                    onSelectedItemChanged: (_) {},
+                    onSelectedItemChanged: (value) {
+                      _minute = value;
+                    },
                     looping: true,
                   ),
                 ),
                 Expanded(
                   child: CupertinoPicker(
-                    itemExtent: 30,
-                    scrollController: secScrollController,
+                    itemExtent: 33,
+                    scrollController: _secondScrollController,
                     children: List<Text>.generate(
-                      59,
+                      60,
                       (i) => Text(
                         '$i',
                         style: TimerTheme.textTheme.bodyText2,
                       ),
                     ),
-                    onSelectedItemChanged: (_) {},
+                    onSelectedItemChanged: (value) {
+                      _second = value;
+                    },
                     looping: true,
                   ),
                 ),
