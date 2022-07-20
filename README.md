@@ -1,6 +1,10 @@
 # Flutter - BLoC
 Bloc 可以讓頁面與邏輯分離變得容易管理，你可以想像他是頁面與邏輯的橋樑，一般會有全局的BLoC，每一個頁面也會對應有一個獨立的BLoC。
 
+| 設定時間 | 倒數計時 | 通知時間 |
+| -------- | -------- | -------- |
+| ![](https://i.imgur.com/ATFphWa.png)     | ![](https://i.imgur.com/RiDoIOk.png)     | ![](https://i.imgur.com/oWSMUBZ.png)     |
+
 ## 安裝相關套件
 ### 主要
 ```
