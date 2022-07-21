@@ -1,6 +1,28 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
+///使用安卓原生發送通知
+class NotificationAndroidUtils {
+  static const platform = MethodChannel('yen.flutter.intro/notification');
+
+  static Future<void> initNotification() async {}
+
+  static void allowedNotification(context) {}
+
+  static void listenNotification(BuildContext context) {}
+
+  static Future<void> showTimerNotification(String title, String detail) async {
+    try {
+      await platform
+          .invokeMethod('getNotfication', {"title": title, "detail": detail});
+    } on PlatformException catch (e) {
+      debugPrint("Failed to show timer notfication: '${e.message}'.");
+    }
+  }
+}
+
+///使用awesome_notifications 套件
 class NotificationUtils {
   static Future<void> initNotification() async {
     await AwesomeNotifications().initialize(
@@ -68,8 +90,9 @@ class NotificationUtils {
               debugPrint('OK');
               break;
             default:
-              if(receivedAction.buttonKeyPressed.startsWith('SLEEP')){
-                int duration = int.parse(receivedAction.buttonKeyPressed.split('_')[1]);
+              if (receivedAction.buttonKeyPressed.startsWith('SLEEP')) {
+                int duration =
+                    int.parse(receivedAction.buttonKeyPressed.split('_')[1]);
                 debugPrint('$duration');
               }
               break;

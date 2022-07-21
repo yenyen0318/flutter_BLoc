@@ -88,7 +88,7 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
       emit(TimerRunInProgress(event.duration, event.total));
     } else {
       //時間到推送通知
-      NotificationUtils.timerNotification(0);
+      NotificationAndroidUtils.showTimerNotification("倒數計時", "時間到囉時間到囉時間到囉時間到囉時間到囉時間到囉");
       emit(TimerInitial(0,0));
     }
   }

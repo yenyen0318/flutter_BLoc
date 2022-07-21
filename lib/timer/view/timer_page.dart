@@ -31,9 +31,6 @@ class _TimerViewState extends State<TimerView> {
   @override
   void initState() {
     super.initState();
-
-    NotificationUtils.allowedNotification(context);
-    NotificationUtils.listenNotification(context);
   }
   
   @override
